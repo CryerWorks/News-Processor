@@ -1,41 +1,37 @@
-name: Build macOS binary
-
+name: macOS Release Build
 on:
   push:
-    branches: [ master ]        # run automatically on every push to master
-  workflow_dispatch:            # allow manual runs from the Actions tab
+    tags: [ "v*" ]        # or change to main pushes
+  workflow_dispatch:
 
 jobs:
   build:
     runs-on: macos-latest
-
     steps:
-    # 1. Checkout the code
     - uses: actions/checkout@v4
-
-    # 2. Set up Python (same version you use locally; 3.11 is fine)
     - uses: actions/setup-python@v4
-      with:
-        python-version: '3.11'
+      with: { python-version: '3.11' }
 
-    # 3. Install build-time dependencies
-    - name: Install Python dependencies
+    - name: Install deps
       run: |
         python -m pip install --upgrade pip
-        pip install \
-          pyinstaller pandas openai python-dotenv scikit-learn python-docx
+        pip install -r requirements.txt pyinstaller
 
-    # 4. Build the standalone executable with PyInstaller
-    #    Command mirrors the instructions in README_mac_compile.txt
-    - name: Build News-Processor app
+    - name: Build .app bundle
       run: |
-        pyinstaller --noconfirm --onefile \
-          --add-data "Mundus_Icon.png:." \
-          --add-data "TrainingData:TrainingData" \
-          NewsProcessorGUI.py
+        pyinstaller --noconfirm --windowed --onedir \
+                    --name "News Processor" \
+                    --add-data "Mundus_Icon.png:." \
+                    --add-data "TrainingData:TrainingData" \
+                    NewsProcessorGUI.py
 
-    # 5. Upload the binary as an artifact
+    - name: Create DMG
+      run: |
+        hdiutil create -volname "News Processor" \
+                       -srcfolder "dist/News Processor.app" \
+                       -ov -format UDZO NewsProcessor.dmg
+
     - uses: actions/upload-artifact@v4
       with:
         name: NewsProcessor-macOS
-        path: dist/NewsProcessorGUI        # adjust if PyInstaller names it differently
+        path: NewsProcessor.dmg
