@@ -30,7 +30,6 @@ jobs:
       run: |
         pyinstaller --noconfirm --onefile \
           --add-data "Mundus_Icon.png:." \
-          --add-data ".env:." \
           --add-data "TrainingData:TrainingData" \
           --add-data "FinlandNewsToCsv.py:." \
           --add-data "FinlandNewsChainer.py:." \
