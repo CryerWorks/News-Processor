@@ -56,4 +56,14 @@ jobs:
     - name: Create DMG
       run: |
         mkdir pkg
-        cp dist/NewsProcessorGUI pkg/NewsProces
+        cp dist/NewsProcessorGUI pkg/NewsProcessorGUI
+        chmod +x pkg/NewsProcessorGUI
+        hdiutil create -volname "News Processor" \
+                       -srcfolder pkg \
+                       -ov -format UDZO NewsProcessor.dmg
+
+    # 5. Upload artifact
+    - uses: actions/upload-artifact@v4
+      with:
+        name: NewsProcessor-macOS
+        path: NewsProcessor.dmg
