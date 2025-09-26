@@ -57,6 +57,11 @@ jobs:
           --add-data "NewsToDocx.py:." \
           NewsProcessorGUI.py
 
+    # 4a. Run comprehensive build validation tests
+    - name: Validate Mac Build
+      run: |
+        python3 test_mac_build.py
+
     # 5. Package the single-file binary into a DMG
     #    (If you switch to --windowed --onedir later, change the srcfolder.)
     - name: Create DMG
