@@ -1,0 +1,37 @@
+name: macOS Release Build
+on:
+  push:
+    tags: [ "v*" ]        # or change to main pushes
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: macos-latest
+    steps:
+    - uses: actions/checkout@v4
+    - uses: actions/setup-python@v4
+      with: { python-version: '3.11' }
+
+    - name: Install deps
+      run: |
+        python -m pip install --upgrade pip
+        pip install -r requirements.txt pyinstaller
+
+    - name: Build .app bundle
+      run: |
+        pyinstaller --noconfirm --windowed --onedir \
+                    --name "News Processor" \
+                    --add-data "Mundus_Icon.png:." \
+                    --add-data "TrainingData:TrainingData" \
+                    NewsProcessorGUI.py
+
+    - name: Create DMG
+      run: |
+        hdiutil create -volname "News Processor" \
+                       -srcfolder "dist/News Processor.app" \
+                       -ov -format UDZO NewsProcessor.dmg
+
+    - uses: actions/upload-artifact@v4
+      with:
+        name: NewsProcessor-macOS
+        path: NewsProcessor.dmg

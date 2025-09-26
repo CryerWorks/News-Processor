@@ -1,0 +1,75 @@
+name: macOS Build
+
+on:
+  push:
+    branches: [ master ]          # or change to main if you use main
+  workflow_dispatch:              # adds the "Run workflow" button
+
+jobs:
+  build:
+    runs-on: macos-latest
+
+    steps:
+    # ──────────────────────────────
+    # 1. Check out the code
+    - uses: actions/checkout@v4
+
+    # 2. Install Python 3.11 + dependencies
+    - uses: actions/setup-python@v4
+      with:
+        python-version: "3.11"
+
+    - name: Install deps
+      run: |
+        python -m pip install --upgrade pip
+        # list everything News-Processor imports:
+        pip install pyinstaller pandas openai python-dotenv scikit-learn python-docx
+
+    # 3. Create a template .env file for the build
+    - name: Create template .env file
+      run: |
+        echo "OPENAI_API_KEY=placeholder-key-replace-after-download" > .env
+
+    # 4. Build the executable with your full PyInstaller command
+    - name: Build News-Processor
+      run: |
+        pyinstaller --noconfirm --onefile \
+          --add-data "Mundus_Icon.png:." \
+          --add-data ".env:." \
+          --add-data "TrainingData:TrainingData" \
+          --add-data "FinlandNewsToCsv.py:." \
+          --add-data "FinlandNewsChainer.py:." \
+          --add-data "FinlandNewsMerger.py:." \
+          --add-data "FinlandNewsSummariserThirdPass.py:." \
+          --add-data "FinlandNewsDigestor.py:." \
+          --add-data "FinlandNewsToDocx.py:." \
+          --add-data "PolandNewsToCsv.py:." \
+          --add-data "PolandNewsChainer.py:." \
+          --add-data "PolandNewsMerger.py:." \
+          --add-data "PolandNewsSummariserThirdPass.py:." \
+          --add-data "PolandNewsDigestor.py:." \
+          --add-data "PolandNewsToDocx.py:." \
+          --add-data "NewsToCsv.py:." \
+          --add-data "NewsChainer.py:." \
+          --add-data "NewsMerger.py:." \
+          --add-data "NewsSummariser.py:." \
+          --add-data "NewsDigestor.py:." \
+          --add-data "NewsToDocx.py:." \
+          NewsProcessorGUI.py
+
+    # 5. Package the single-file binary into a DMG
+    #    (If you switch to --windowed --onedir later, change the srcfolder.)
+    - name: Create DMG
+      run: |
+        mkdir pkg
+        cp dist/NewsProcessorGUI pkg/NewsProcessorGUI
+        chmod +x pkg/NewsProcessorGUI
+        hdiutil create -volname "News Processor" \
+                       -srcfolder pkg \
+                       -ov -format UDZO NewsProcessor.dmg
+
+    # 6. Upload artifact
+    - uses: actions/upload-artifact@v4
+      with:
+        name: NewsProcessor-macOS
+        path: NewsProcessor.dmg
