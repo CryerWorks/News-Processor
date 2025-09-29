@@ -34,7 +34,8 @@
 
 ### 🍎 **Mac Users**
 ```bash
-# Simply double-click:
+# First time: Right-click → Open (to bypass security)
+# Then simply double-click:
 Mundus News Digest.command
 ```
 
@@ -288,6 +289,11 @@ Mundus-News-Processor/
 - Normal for large datasets (30+ days of news)
 - Keep terminal window open during processing
 - Ensure stable internet connection for AI calls
+
+#### **Mac: "Permission denied" or "Access privileges" error**
+- **Right-click** the `.command` file → Select **"Open"** → Click **"Open"** in dialog
+- Or run in Terminal: `chmod +x "Mundus News Digest.command"`
+- Or check **System Preferences** → **Security & Privacy** → Click **"Open Anyway"**
 
 ### Performance Tips
 - Process files in batches of 30 days or less

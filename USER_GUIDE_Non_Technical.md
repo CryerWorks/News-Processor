@@ -9,7 +9,30 @@ Transform your daily news markdown files into professional monthly reports with 
 ## 🚀 Quick Start Guide
 
 ### 🍎 **Mac Users** (Easiest Method)
-1. **Double-click** `Mundus News Digest.command`
+
+#### **First Time Setup** (Security Fix)
+If you get a "permission denied" or "access privileges" error:
+
+**Option A - Right-Click Method** (Recommended):
+1. **Right-click** on `Mundus News Digest.command`
+2. Select **"Open"** from the context menu
+3. Click **"Open"** in the security dialog that appears
+4. The application will start normally
+
+**Option B - Terminal Method**:
+1. Open **Terminal** (Applications → Utilities → Terminal)
+2. Type: `chmod +x ` (with a space at the end)
+3. **Drag** `Mundus News Digest.command` into Terminal
+4. Press **Enter**
+5. Now double-click the file normally
+
+**Option C - System Preferences**:
+1. Go to **System Preferences** → **Security & Privacy**
+2. Click **"Open Anyway"** if the file was blocked
+3. Double-click the file again
+
+#### **After First Time**
+1. **Double-click** `Mundus News Digest.command` (works normally now)
 2. Follow the on-screen prompts
 3. Your web browser will open automatically
 4. Start processing your news files!
