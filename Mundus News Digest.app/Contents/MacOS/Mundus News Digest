@@ -1,0 +1,17 @@
+#!/bin/bash
+
+# Mundus News Digest Generator - Mac App Bundle Launcher
+# This creates a native Mac application experience
+
+# Get the app bundle path and navigate to the parent directory
+APP_BUNDLE_PATH="$( cd "$( dirname "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )"
+PARENT_DIR="$(dirname "$(dirname "$(dirname "$APP_BUNDLE_PATH")")")"
+cd "$PARENT_DIR"
+
+# Open Terminal and run the command script
+osascript -e "
+tell application \"Terminal\"
+    activate
+    do script \"cd '$PARENT_DIR' && exec bash 'Mundus News Digest.command'\"
+end tell
+"

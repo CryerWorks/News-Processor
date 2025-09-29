@@ -1,41 +1,138 @@
-# Byte-compiled / optimized / DLL files
+# Mundus News Digest Generator - Git Ignore File
+
+# Environment and API Keys
+.env
+*.env
+env_template_filled.txt
+
+# Python
 __pycache__/
 *.py[cod]
 *$py.class
-
-# C extensions
 *.so
-
-# Distribution / packaging
 .Python
 build/
+develop-eggs/
 dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
 *.egg-info/
-*.spec
+.installed.cfg
+*.egg
+MANIFEST
 
-# Installer logs
-debug.log
+# Virtual Environments
+venv/
+ENV/
+env/
+.venv/
+.ENV/
+.env/
 
-# OS files
+# IDE and Editors
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
 .DS_Store
 Thumbs.db
 
-# Environment variables and secrets
-.env
-
-# Output and generated files
+# Application Specific
+uploads/
+outputs/
 *.csv
 *.xlsx
 *.docx
-*.md
+*.md.backup
+temp/
+temporary/
+cache/
 
-# Sample and training data (keep these for demo)
-!TrainingData/
-!SampleMDs/
+# Processing Output Files (keep examples, ignore generated)
+extracted_news_*.csv
+extracted_news_*.xlsx
+chained_news_*.csv
+merged_stories_*.csv
+merged_stories_*.xlsx
+summarised_stories_*.csv
+summarised_stories_*.xlsx
+Monthly_News_Digest_*.md
+Monthly_News_Digest_*.docx
 
-# Icon
-!Mundus_Icon.png
+# Logs
+*.log
+logs/
 
-# README and scripts
-!README_mac_compile.txt
-!*.py 
+# OS Generated Files
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# Backup Files
+*.bak
+*.backup
+*~
+
+# Temporary Files
+*.tmp
+*.temp
+temp.*
+
+# Archive Files (unless specifically needed)
+*.zip
+*.tar.gz
+*.rar
+
+# Jupyter Notebook
+.ipynb_checkpoints
+
+# pyenv
+.python-version
+
+# pipenv
+Pipfile.lock
+
+# PEP 582
+__pypackages__/
+
+# Celery
+celerybeat-schedule
+celerybeat.pid
+
+# SageMath parsed files
+*.sage.py
+
+# Environments
+.env
+.venv
+env/
+venv/
+ENV/
+env.bak/
+venv.bak/
+
+# Rope project settings
+.ropeproject
+
+# mkdocs documentation
+/site
+
+# mypy
+.mypy_cache/
+.dmypy.json
+dmypy.json
+
+# Pyre type checker
+.pyre/

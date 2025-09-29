@@ -63,7 +63,7 @@ def generate_summary(headlines, full_story, dates):
 
     try:
         response = client.chat.completions.create(
-            model="gpt-4-turbo",
+            model="gpt-4o",
             messages=[
                 {"role": "system", "content": "You are a professional news summariser writing in British English and past tense. "
                                               "Your summaries must always be fully complete and must never be cut off."},
@@ -88,7 +88,7 @@ def generate_headline(headlines, full_story):
     """
     try:
         response = client.chat.completions.create(
-            model="gpt-4-turbo",
+            model="gpt-4o",
             messages=[
                 {"role": "system", "content": "You are an expert news summariser writing in British English."},
                 {"role": "user", "content": f"Generate a concise, professional news headline summarising the following merged news story:\n\nHeadlines: {headlines}\n\nFull Story:\n{full_story}"}
