@@ -8,7 +8,16 @@ from sklearn.metrics.pairwise import cosine_similarity
 def preprocess_text(text):
     """
     Cleans and normalizes text by removing punctuation, converting to lowercase, and keeping only meaningful words.
+    Handles NaN, None, and non-string values gracefully.
     """
+    # Handle NaN, None, and non-string values
+    if pd.isna(text) or text is None:
+        return ""
+    
+    # Convert to string if it's not already
+    if not isinstance(text, str):
+        text = str(text)
+    
     text = text.lower()
     text = re.sub(r"[^\w\s]", "", text)  # Remove punctuation
     return text
@@ -17,24 +26,46 @@ def extract_keywords(text, num_keywords=5):
     """
     Extracts key terms from the article using TF-IDF vectorization.
     Returns a set of top `num_keywords` important words from the text.
+    Handles empty or invalid text gracefully.
     """
-    vectorizer = TfidfVectorizer(stop_words="english", max_features=1000)
-    tfidf_matrix = vectorizer.fit_transform([text])
-    feature_array = vectorizer.get_feature_names_out()
-    tfidf_scores = tfidf_matrix.toarray()[0]
-
-    # Get top keyword indices sorted by score
-    top_indices = tfidf_scores.argsort()[-num_keywords:]
-    keywords = {feature_array[i] for i in top_indices}
+    # Handle empty or invalid text
+    if not text or not isinstance(text, str) or len(text.strip()) == 0:
+        return set()
     
-    return keywords
+    try:
+        vectorizer = TfidfVectorizer(stop_words="english", max_features=1000)
+        tfidf_matrix = vectorizer.fit_transform([text])
+        feature_array = vectorizer.get_feature_names_out()
+        tfidf_scores = tfidf_matrix.toarray()[0]
+
+        # Get top keyword indices sorted by score
+        top_indices = tfidf_scores.argsort()[-num_keywords:]
+        keywords = {feature_array[i] for i in top_indices}
+        
+        return keywords
+    except Exception as e:
+        print(f"⚠️ Warning: Could not extract keywords from text: {e}")
+        return set()
 
 def find_related_articles(articles_df, similarity_threshold=0.2):
     """
     Finds and groups related articles based on keyword overlap and similarity scores.
+    Handles missing or invalid data gracefully.
     """
     grouped_articles = []
     used_articles = set()
+    
+    # Ensure required columns exist and handle missing data
+    required_columns = ["Headline", "Content"]
+    for col in required_columns:
+        if col not in articles_df.columns:
+            raise ValueError(f"Required column '{col}' not found in articles data")
+        # Fill NaN values with empty strings
+        articles_df[col] = articles_df[col].fillna("")
+        # Ensure all values are strings
+        articles_df[col] = articles_df[col].astype(str)
+    
+    print(f"🔍 Processing {len(articles_df)} articles for chaining...")
     
     # Preprocess headlines and content
     articles_df["Processed_Headline"] = articles_df["Headline"].apply(preprocess_text)
