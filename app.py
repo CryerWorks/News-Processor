@@ -16,7 +16,7 @@ app = Flask(__name__)
 app.config['SECRET_KEY'] = 'your-secret-key-change-this'
 app.config['UPLOAD_FOLDER'] = 'uploads'
 app.config['OUTPUT_FOLDER'] = 'outputs'
-socketio = SocketIO(app, cors_allowed_origins="*")
+socketio = SocketIO(app, cors_allowed_origins="*", async_mode='threading')
 
 # Ensure upload and output directories exist
 os.makedirs(app.config['UPLOAD_FOLDER'], exist_ok=True)

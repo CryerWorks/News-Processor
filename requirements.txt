@@ -6,11 +6,10 @@ Werkzeug==2.3.7
 
 # Production server dependencies (stable versions with wheels)
 gunicorn==21.2.0
-eventlet==0.33.3
 
-# Data processing dependencies (stable versions with pre-compiled wheels)
-pandas==2.1.4
-numpy==1.26.4
+# Data processing dependencies (Python 3.13 compatible with wheels)
+pandas==2.2.3
+numpy==2.1.0
 scikit-learn==1.5.2
 openpyxl==3.1.5
 
