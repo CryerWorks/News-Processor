@@ -107,9 +107,7 @@ def categorize_with_llm(summary, initial_category):
     ]
 
     try:
-        client = openai.OpenAI()  # ✅ Initialize OpenAI client
-        
-        response = client.chat.completions.create(  # ✅ Correct OpenAI call
+        response = client.chat.completions.create(  # ✅ Use global client
             model="gpt-4o",
             messages=[
                 {"role": "system", "content": "You are an expert news categorizer ensuring accurate classification of news stories."},
