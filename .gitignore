@@ -49,9 +49,12 @@ Thumbs.db
 uploads/
 outputs/
 *.csv
-*.xlsx
+# *.xlsx  # Commented out to allow training data files
 *.docx
 *.md.backup
+
+# Allow training data files specifically
+!TrainingData/*.xlsx
 temp/
 temporary/
 cache/
@@ -66,6 +69,9 @@ summarised_stories_*.csv
 summarised_stories_*.xlsx
 Monthly_News_Digest_*.md
 Monthly_News_Digest_*.docx
+
+# Keep training data files (needed for deployment)
+!TrainingData/*.xlsx
 
 # Logs
 *.log
