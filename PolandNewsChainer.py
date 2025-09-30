@@ -330,7 +330,7 @@ def find_related_articles(articles_df, use_ai_validation=AI_VALIDATION_ENABLED):
     
     # Stage 2: AI validation
     if use_ai_validation and candidates:
-        validated_pairs = validate_candidates_with_ai(candidates)
+        validated_pairs = validate_candidates_with_ai(candidates, articles_df)
     else:
         # Fallback to accepting top candidates without AI
         validated_pairs = [(c['index_i'], c['index_j']) for c in candidates[:100]]
