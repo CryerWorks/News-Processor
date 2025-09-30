@@ -50,7 +50,7 @@ The code is already configured for Render deployment with:
 3. **Configure Deployment**
    - **Name**: `mundus-news-digest` (or your choice)
    - **Environment**: `Python 3`
-   - **Build Command**: `pip install -r requirements.txt`
+   - **Build Command**: `pip install --upgrade pip && pip install --only-binary=all --no-compile -r requirements.txt`
    - **Start Command**: `python app.py`
    - **Plan**: Select **"Free"** tier
 
@@ -208,6 +208,11 @@ services:
 - **Cause**: Dependency issues
 - **Solution**: Check build logs in Render
 - **Fix**: Verify `requirements.txt` is correct
+
+#### **"Cython Compilation Errors" (scikit-learn)**
+- **Cause**: Python version incompatibility
+- **Solution**: Use Python 3.12 with scikit-learn 1.5.2
+- **Fix**: Ensure `--only-binary=all` flag is used in build command
 
 #### **"Memory Limit Exceeded"**
 - **Cause**: Processing too many files at once

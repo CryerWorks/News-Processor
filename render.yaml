@@ -2,11 +2,13 @@ services:
   - type: web
     name: mundus-news-digest
     env: python
-    buildCommand: pip install -r requirements.txt
+    buildCommand: |
+      pip install --upgrade pip
+      pip install --only-binary=all --no-compile -r requirements.txt
     startCommand: python app.py
     envVars:
       - key: PYTHON_VERSION
-        value: 3.9.18
+        value: 3.12.7
       - key: FLASK_ENV
         value: production
       - key: PORT
