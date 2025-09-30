@@ -3,15 +3,18 @@ import openai
 import os
 from dotenv import load_dotenv
 
-# Load OpenAI API key from .env file
-load_dotenv()
+# Load OpenAI API key from .env file or environment
+load_dotenv()  # Load from .env file if it exists (local development)
 OPENAI_API_KEY = os.getenv("OPENAI_API_KEY")
 
 if not OPENAI_API_KEY:
-    raise ValueError("❌ OpenAI API key is missing! Check your .env file.")
+    raise ValueError("❌ OpenAI API key is missing! Set OPENAI_API_KEY environment variable.")
 
-# OpenAI client setup
-client = openai.OpenAI(api_key=OPENAI_API_KEY)
+# OpenAI client setup with error handling
+try:
+    client = openai.OpenAI(api_key=OPENAI_API_KEY)
+except Exception as e:
+    raise ValueError(f"❌ Failed to initialize OpenAI client: {e}")
 
 def extract_numeric_day(date_string):
     """
