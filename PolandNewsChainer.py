@@ -11,12 +11,26 @@ def preprocess_text(text):
     Handles NaN, None, and non-string values gracefully.
     """
     # Handle NaN, None, and non-string values
-    if pd.isna(text) or text is None:
+    if text is None or text == "":
         return ""
+    
+    # Handle pandas NaN and numpy NaN
+    try:
+        if pd.isna(text):
+            return ""
+    except (TypeError, ValueError):
+        pass
     
     # Convert to string if it's not already
     if not isinstance(text, str):
-        text = str(text)
+        try:
+            text = str(text)
+        except:
+            return ""
+    
+    # Final check - if empty after conversion
+    if not text or text == "nan" or text == "None":
+        return ""
     
     text = text.lower()
     text = re.sub(r"[^\w\s]", "", text)  # Remove punctuation
