@@ -32,26 +32,36 @@
 
 ## 📋 Quick Start
 
-### 🍎 **Mac Users**
+### 🌐 **Cloud Hosted Version** ⭐ (Recommended)
+```
+🔗 Visit: https://mundus-news-digest.onrender.com
+✅ No installation required
+✅ Works on any device with internet
+✅ No Mac security issues
+```
+
+### 💻 **Local Installation** (Alternative)
+
+#### 🍎 **Mac Users**
 ```bash
 # First time: Right-click → Open (to bypass security)
 # Then simply double-click:
 Mundus News Digest.command
 ```
 
-### 🪟 **Windows Users**  
-```batch
+#### 🪟 **Windows Users**  
+```bash
 # Simply double-click:
 Mundus News Digest.bat
 ```
 
-### 🌐 **All Platforms (Alternative)**
+#### 🌐 **All Platforms**
 ```bash
 python run_web_app.py
 # Then visit: http://localhost:5000
 ```
 
-**That's it!** Your browser will open automatically with the application ready to use.
+**🌟 For the easiest experience, use the cloud-hosted version above!**
 
 ---
 

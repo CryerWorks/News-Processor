@@ -1,0 +1,20 @@
+services:
+  - type: web
+    name: mundus-news-digest
+    env: python
+    buildCommand: pip install -r requirements.txt
+    startCommand: python app.py
+    envVars:
+      - key: PYTHON_VERSION
+        value: 3.9.18
+      - key: FLASK_ENV
+        value: production
+      - key: PORT
+        value: 10000
+    scaling:
+      minInstances: 0
+      maxInstances: 1
+    disk:
+      name: mundus-storage
+      mountPath: /opt/render/project/storage
+      sizeGB: 1
