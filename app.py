@@ -1,5 +1,6 @@
-from flask import Flask, render_template, request, jsonify, send_file, session
+from flask import Flask, render_template, request, jsonify, send_file, session, redirect, url_for, flash
 from flask_socketio import SocketIO, emit, join_room
+from functools import wraps
 import os
 import sys
 import pandas as pd
@@ -9,13 +10,24 @@ import queue
 import uuid
 import tempfile
 import shutil
-from datetime import datetime
+from datetime import datetime, timedelta
 import zipfile
+from dotenv import load_dotenv
+import hashlib
+
+# Load environment variables
+load_dotenv()
 
 app = Flask(__name__)
-app.config['SECRET_KEY'] = 'your-secret-key-change-this'
+app.config['SECRET_KEY'] = os.environ.get('SECRET_KEY', 'your-secret-key-change-this-in-production')
 app.config['UPLOAD_FOLDER'] = 'uploads'
 app.config['OUTPUT_FOLDER'] = 'outputs'
+app.config['PERMANENT_SESSION_LIFETIME'] = timedelta(hours=24)  # 24-hour session
+
+# Admin credentials from environment
+ADMIN_USERNAME = os.environ.get('ADMIN_USERNAME', 'mundusAdmin')
+ADMIN_PASSWORD = os.environ.get('ADMIN_PASSWORD', 'mundusClavis')
+
 socketio = SocketIO(app, cors_allowed_origins="*", async_mode='threading')
 
 # Ensure upload and output directories exist
@@ -24,6 +36,27 @@ os.makedirs(app.config['OUTPUT_FOLDER'], exist_ok=True)
 
 # Store active processing sessions
 active_sessions = {}
+
+# Authentication decorator
+def login_required(f):
+    @wraps(f)
+    def decorated_function(*args, **kwargs):
+        if not session.get('authenticated'):
+            return redirect(url_for('login'))
+        
+        # Check if session has expired (24 hours)
+        login_time = session.get('login_time')
+        if not login_time or datetime.now() - datetime.fromisoformat(login_time) > timedelta(hours=24):
+            session.clear()
+            flash('Session expired. Please log in again.', 'warning')
+            return redirect(url_for('login'))
+        
+        return f(*args, **kwargs)
+    return decorated_function
+
+def hash_password(password):
+    """Simple password hashing for basic security"""
+    return hashlib.sha256(password.encode()).hexdigest()
 
 class NewsProcessorWeb:
     def __init__(self, session_id):
@@ -204,12 +237,40 @@ class NewsProcessorWeb:
             socketio.emit('processing_complete', {'success': False, 'error': str(e)}, room=self.session_id)
             return False
 
+@app.route('/login', methods=['GET', 'POST'])
+def login():
+    """Login page"""
+    if request.method == 'POST':
+        username = request.form.get('username')
+        password = request.form.get('password')
+        
+        if username == ADMIN_USERNAME and password == ADMIN_PASSWORD:
+            session['authenticated'] = True
+            session['login_time'] = datetime.now().isoformat()
+            session['username'] = username
+            session.permanent = True
+            flash('Successfully logged in!', 'success')
+            return redirect(url_for('index'))
+        else:
+            flash('Invalid credentials. Please try again.', 'danger')
+    
+    return render_template('login.html')
+
+@app.route('/logout')
+def logout():
+    """Logout and clear session"""
+    session.clear()
+    flash('You have been logged out.', 'info')
+    return redirect(url_for('login'))
+
 @app.route('/')
+@login_required
 def index():
-    """Main page"""
-    return render_template('index.html')
+    """Main page - requires authentication"""
+    return render_template('index.html', username=session.get('username'))
 
 @app.route('/upload', methods=['POST'])
+@login_required
 def upload_files():
     """Handle file uploads"""
     if 'files' not in request.files:
@@ -248,6 +309,7 @@ def upload_files():
     })
 
 @app.route('/process/<session_id>', methods=['POST'])
+@login_required
 def start_processing(session_id):
     """Start processing files for a session"""
     if session_id not in active_sessions:
@@ -265,6 +327,7 @@ def start_processing(session_id):
     return jsonify({'success': True, 'message': 'Processing started'})
 
 @app.route('/download/<session_id>/<filename>')
+@login_required
 def download_file(session_id, filename):
     """Download processed files"""
     if session_id not in active_sessions:
@@ -278,7 +341,11 @@ def download_file(session_id, filename):
 
 @socketio.on('connect')
 def handle_connect():
-    """Handle client connection"""
+    """Handle client connection - requires authentication"""
+    if not session.get('authenticated'):
+        emit('auth_required', {'message': 'Authentication required'})
+        return False
+    
     session_id = session.get('session_id')
     if session_id:
         join_room(session_id)
@@ -286,7 +353,11 @@ def handle_connect():
 
 @socketio.on('join_session')
 def handle_join_session(data):
-    """Handle client joining a specific session"""
+    """Handle client joining a specific session - requires authentication"""
+    if not session.get('authenticated'):
+        emit('auth_required', {'message': 'Authentication required'})
+        return False
+        
     session_id = data.get('session_id')
     if session_id:
         join_room(session_id)

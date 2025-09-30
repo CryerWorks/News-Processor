@@ -59,6 +59,9 @@ The code is already configured for Render deployment with:
    - Click **"Environment"** tab
    - Add: `OPENAI_API_KEY` = `your_openai_key_here`
    - Add: `FLASK_ENV` = `production`
+   - Add: `ADMIN_USERNAME` = `mundusAdmin` (or your choice)
+   - Add: `ADMIN_PASSWORD` = `mundusClavis` (or your choice)
+   - Add: `SECRET_KEY` = `your-random-secret-key` (optional, for enhanced security)
 
 5. **Deploy**
    - Click **"Create Web Service"**

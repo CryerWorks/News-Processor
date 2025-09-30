@@ -12,12 +12,26 @@
     <div class="container-fluid">
         <div class="row">
             <div class="col-12">
-                <div class="header-section text-center py-4">
+                <div class="header-section text-center py-4 position-relative">
+                    <!-- Logout Button -->
+                    <div class="position-absolute top-0 end-0 m-3">
+                        <div class="dropdown">
+                            <button class="btn btn-outline-primary dropdown-toggle" type="button" data-bs-toggle="dropdown">
+                                <i class="fas fa-user me-2"></i>{{ username }}
+                            </button>
+                            <ul class="dropdown-menu">
+                                <li><a class="dropdown-item" href="{{ url_for('logout') }}">
+                                    <i class="fas fa-sign-out-alt me-2"></i>Logout
+                                </a></li>
+                            </ul>
+                        </div>
+                    </div>
+                    
                     <img src="{{ url_for('static', filename='images/Mundus_Icon.png') }}" alt="Mundus Logo" class="logo mb-3">
                     <h1 class="display-4 text-primary mb-2">Mundus News Digest Generator</h1>
                     <p class="lead text-muted">Transform your markdown news files into professional monthly digests</p>
                     <div class="badge bg-success mb-2">
-                        <i class="fas fa-cloud me-1"></i>Cloud Hosted - No Installation Required
+                        <i class="fas fa-cloud me-1"></i>Cloud Hosted - Secure Access
                     </div>
                 </div>
             </div>

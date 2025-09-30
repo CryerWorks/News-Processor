@@ -94,6 +94,11 @@ class NewsProcessorApp {
         this.socket.on('processing_complete', (data) => {
             this.handleProcessingComplete(data);
         });
+        
+        this.socket.on('auth_required', (data) => {
+            // Redirect to login if authentication is required
+            window.location.href = '/login';
+        });
     }
     
     handleFileSelect(event) {
