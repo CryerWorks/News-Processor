@@ -50,7 +50,8 @@ The code is already configured for Render deployment with:
 3. **Configure Deployment**
    - **Name**: `mundus-news-digest` (or your choice)
    - **Environment**: `Python 3`
-   - **Build Command**: `pip install --upgrade pip && pip install --only-binary=all --no-compile -r requirements.txt`
+   - **Runtime**: `python-3.12.7` (important: not 3.13!)
+   - **Build Command**: `pip install --upgrade pip wheel setuptools && pip install --only-binary=all --no-compile --prefer-binary -r requirements.txt`
    - **Start Command**: `python app.py`
    - **Plan**: Select **"Free"** tier
 
