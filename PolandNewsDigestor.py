@@ -111,7 +111,7 @@ def categorize_with_llm(summary, initial_category):
 
     try:
         response = client.chat.completions.create(  # ✅ Use global client
-            model="gpt-4o",
+            model="gpt-4-turbo",
             messages=[
                 {"role": "system", "content": "You are an expert news categorizer ensuring accurate classification of news stories."},
                 {"role": "user", "content": f"Here is a news summary:\n\n{summary}\n\n"
