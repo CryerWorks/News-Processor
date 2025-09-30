@@ -2,7 +2,7 @@
 
 ## Problem Statement
 
-When processing 20+ markdown documents (a full month of news), the system was hitting OpenAI's GPT-4o context window limit of 128,000 tokens. Large merged stories with extensive content were causing errors:
+When processing 20+ markdown documents (a full month of news), the system was hitting OpenAI's GPT-4.1 context window limit of 128,000 tokens. Large merged stories with extensive content were causing errors:
 
 ```
 ⚠️ Error generating headline: Error code: 400 - {'error': {'message': "This model's maximum context length is 128000 tokens. However, your messages resulted in 231315 tokens..."}}
@@ -11,7 +11,7 @@ When processing 20+ markdown documents (a full month of news), the system was hi
 ## Root Cause
 
 1. **NewsMerger.py** combines all related articles across multiple days into single "super-cells"
-2. **NewsSummariser.py** passes entire merged stories to GPT-4o for headline and summary generation
+2. **NewsSummariser.py** passes entire merged stories to GPT-4.1 for headline and summary generation
 3. For 20+ days of related news, these merged stories can exceed 230,000+ tokens
 4. OpenAI API rejects requests exceeding the 128k token context window
 
@@ -22,7 +22,7 @@ When processing 20+ markdown documents (a full month of news), the system was hi
 The solution implements an intelligent chunking mechanism that:
 - **Detects** when content will exceed token limits (before API calls)
 - **Splits** large stories at natural boundaries (article/paragraph breaks)
-- **Processes** each chunk independently with GPT-4o
+- **Processes** each chunk independently with GPT-4.1
 - **Recombines** chunk summaries into coherent final output
 - **Preserves** chronological order and narrative flow
 
@@ -63,14 +63,14 @@ def combine_chunk_summaries(headlines, chunk_summaries, dates):
     """Combine multiple chunk summaries into coherent final summary"""
 ```
 
-Uses GPT-4o to merge chunk summaries into a flowing narrative without explicit "part" references.
+Uses GPT-4.1 to merge chunk summaries into a flowing narrative without explicit "part" references.
 
 ## Implementation Details
 
 ### Token Limits
 
 ```python
-MAX_CONTEXT_TOKENS = 128000  # GPT-4o context window
+MAX_CONTEXT_TOKENS = 128000  # GPT-4.1 context window
 SAFE_CHUNK_TOKENS = 80000    # Safe chunk size with buffer
 TOKEN_ESTIMATE_RATIO = 4     # 1 token ≈ 4 characters
 ```
