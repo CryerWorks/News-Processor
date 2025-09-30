@@ -2,7 +2,9 @@
 
 ## Problem Statement
 
-When processing 20+ markdown documents (a full month of news), the system was hitting OpenAI's GPT-4.1 context window limit of 128,000 tokens. Large merged stories with extensive content were causing errors:
+**NOTE: This chunking feature is currently DISABLED as GPT-4.1 has a 1M token context window.**
+
+Originally, when processing 20+ markdown documents (a full month of news), the system was hitting OpenAI's GPT-4o context window limit of 128,000 tokens. Large merged stories with extensive content were causing errors:
 
 ```
 ⚠️ Error generating headline: Error code: 400 - {'error': {'message': "This model's maximum context length is 128000 tokens. However, your messages resulted in 231315 tokens..."}}
@@ -70,13 +72,16 @@ Uses GPT-4.1 to merge chunk summaries into a flowing narrative without explicit 
 ### Token Limits
 
 ```python
-MAX_CONTEXT_TOKENS = 128000  # GPT-4.1 context window
-SAFE_CHUNK_TOKENS = 80000    # Safe chunk size with buffer
-TOKEN_ESTIMATE_RATIO = 4     # 1 token ≈ 4 characters
+MAX_CONTEXT_TOKENS = 1000000  # GPT-4.1 context window (1M tokens)
+SAFE_CHUNK_TOKENS = 900000    # Safe chunk size with buffer
+                              # NOTE: Chunking effectively disabled for GPT-4.1
+TOKEN_ESTIMATE_RATIO = 4      # 1 token ≈ 4 characters
 ```
 
-- 80k token chunks provide 48k buffer for prompt overhead
-- Prevents edge cases where token estimation is slightly off
+- **GPT-4.1 Update**: Context window increased from 128k to 1M tokens
+- Chunking now effectively disabled (threshold set to 900k tokens)
+- Chunking code remains in place for future use or model fallback
+- To re-enable chunking: Set `SAFE_CHUNK_TOKENS = 80000`
 
 ### Processing Flow
 
@@ -189,6 +194,15 @@ if total_estimated_tokens < MAX_CONTEXT_TOKENS:  # Use full 128k limit
 ```
 
 This reduces chunking frequency while maintaining safety net.
+
+## Current Status (GPT-4.1 Update)
+
+**Chunking is currently DISABLED** due to GPT-4.1's 1M token context window, which is more than sufficient for processing even 30+ days of news content. The chunking logic remains in the codebase as a safety feature and can be re-enabled if:
+- A different model with smaller context is used
+- Extremely large datasets exceed 900k tokens
+- Cost optimization requires smaller context windows
+
+**To re-enable chunking:** Change `SAFE_CHUNK_TOKENS = 80000` in the three Summariser files.
 
 ## Conclusion
 

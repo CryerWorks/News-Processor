@@ -18,9 +18,11 @@ except Exception as e:
     raise ValueError(f"❌ Failed to initialize OpenAI client: {e}")
 
 # Token limits and safety margins
-MAX_CONTEXT_TOKENS = 128000  # GPT-4.1 context window
-SAFE_CHUNK_TOKENS = 80000    # Safe chunk size with buffer for prompt overhead
-TOKEN_ESTIMATE_RATIO = 4     # Rough estimate: 1 token ≈ 4 characters
+MAX_CONTEXT_TOKENS = 1000000  # GPT-4.1 context window (1M tokens)
+SAFE_CHUNK_TOKENS = 900000    # Safe chunk size with buffer for prompt overhead
+                              # NOTE: Chunking effectively disabled for GPT-4.1's massive context window
+                              # Set to lower value (e.g., 80000) to re-enable chunking if needed
+TOKEN_ESTIMATE_RATIO = 4      # Rough estimate: 1 token ≈ 4 characters
 
 def extract_numeric_day(date_string):
     """
